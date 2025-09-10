@@ -1,6 +1,7 @@
 package APISustentavel.Service;
 
 import APISustentavel.Model.Entity.AcaoSustentavel;
+import APISustentavel.Model.Exceptions.RecursoNaoEncontradoException;
 import APISustentavel.Repository.AcaoSustentavelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class AcaoSustentavelService {
 
     public AcaoSustentavel findAcaoSustentavelById(Long id){
         return acaoSustentavelRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("")
+                () -> new RecursoNaoEncontradoException("Ação sustentavel não encontrada pelo id" + id)
         );
     }
 
