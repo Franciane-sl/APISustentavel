@@ -1,6 +1,7 @@
 package APISustentavel.Service;
 
 import APISustentavel.Model.Entity.AcaoSustentavel;
+import APISustentavel.Model.Enum.CategoriaEnum;
 import APISustentavel.Model.Exceptions.RecursoNaoEncontradoException;
 import APISustentavel.Repository.AcaoSustentavelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,10 @@ public class AcaoSustentavelService {
         return acaoSustentavelRepository.findById(id).orElseThrow(
                 () -> new RecursoNaoEncontradoException("Ação sustentavel não encontrada pelo id" + id)
         );
+    }
+
+    public List<AcaoSustentavel> findByCategoria(CategoriaEnum categoria) {
+        return acaoSustentavelRepository.findByCategoria(categoria);
     }
 
     public AcaoSustentavel create(AcaoSustentavel acaoSustentavel){
