@@ -3,6 +3,8 @@ package APISustentavel.Controller;
 import APISustentavel.Model.Dtos.RequestAcaoSustentavelDTO;
 import APISustentavel.Model.Dtos.ResponseAcaoSustentavelDTO;
 import APISustentavel.Model.Entity.AcaoSustentavel;
+import APISustentavel.Model.Enum.CategoriaEnum;
+import APISustentavel.Model.Exceptions.RecursoNaoEncontradoException;
 import APISustentavel.Service.AcaoSustentavelService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -38,6 +40,26 @@ public class AcaoSustentavelController {
         ResponseAcaoSustentavelDTO acaoSustentavelDTO = modelMapper.map(acaoSustentavel, ResponseAcaoSustentavelDTO.class);
 
         return ResponseEntity.ok(acaoSustentavelDTO);
+    }
+
+    @GetMapping("/categoria")
+    public ResponseEntity<List<ResponseAcaoSustentavelDTO>> getByCategoria(@RequestParam("tipo") String tipo) {
+        try {
+
+            var categoria = CategoriaEnum.valueOf(tipo.toUpperCase());
+
+            List<ResponseAcaoSustentavelDTO> acoes = acaoSustentavelService.findByCategoria(categoria)
+                    .stream()
+                    .map(acao -> modelMapper.map(acao, ResponseAcaoSustentavelDTO.class))
+                    .collect(Collectors.toList());
+
+            return acoes.isEmpty()
+                    ? ResponseEntity.noContent().build()
+                    : ResponseEntity.ok(acoes);
+
+        } catch (IllegalArgumentException e) {
+            throw new RecursoNaoEncontradoException("Categoria inválida: " + tipo);
+        }
     }
 
     @PostMapping
